@@ -1,5 +1,5 @@
 ---
-title: "Project 1 - API"
+title: "Project 1 - Financial Data API"
 author: "Spencer Williams"
 date: "6/25/2023"
 output: 
@@ -12,11 +12,20 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Loading in the correct packages
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+library(httr)
+library(dplyr)
+library(jsonlite)
+library(rmarkdown)
+library(tidyverse)
+```
 
-```{r to_numeric, include=FALSE}
-convertNumeric <- function(vector){
+## Creating a function to convert character vectors to numeric if it is a vector of numerical data
+```{r convertToNumeric, include=FALSE}
+convertToNumeric <- function(vector){
   if (any(is.na(suppressWarnings(as.numeric(vector))) == TRUE)){
-    output <- vec
+    output <- vector
   }
   else {
     output <- as.numeric(vector)
@@ -25,4 +34,30 @@ convertNumeric <- function(vector){
 }
 ```
 
+## `Tickers`
+
+```{r}
+tickers <- function(stock="all"){
+  outputAPI <- fromJSON("https://api.polygon.io/v3/reference/tickers?active=true&apiKey=BnFt9sqaLWehzloLkpMtEeOG4WjAqkUc")
+  output <- outputAPI$results
+  
+  if(stock !="all") {
+    if(stock %in% output$ticker) {
+      output <- output %>% filter(ticker == stock)
+    }
+    else if (stock %in% output$name) {
+      output <- output %>% filter(name == stock)
+    }
+    else {
+      message <- paste("Error: Stock was not found in the ticker or name column of dataset.")
+      stop(message)
+    }
+  }
+    else {
+  
+    }
+  output <- suppressMessages(as.data.frame(lapply(output, convertToNumeric)))
+  return(output)
+}
+```
 
