@@ -1,0 +1,28 @@
+---
+title: "Project 1 - API"
+author: "Spencer Williams"
+date: "6/25/2023"
+output: 
+  github_document:
+    toc: true
+    html_preview: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r to_numeric, include=FALSE}
+convertNumeric <- function(vector){
+  if (any(is.na(suppressWarnings(as.numeric(vector))) == TRUE)){
+    output <- vec
+  }
+  else {
+    output <- as.numeric(vector)
+  }
+  return(output)
+}
+```
+
+
