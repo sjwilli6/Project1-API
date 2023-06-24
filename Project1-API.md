@@ -3,19 +3,39 @@ Project 1 - Financial Data API
 Spencer Williams
 6/25/2023
 
-- <a href="#loading-in-the-correct-packages"
-  id="toc-loading-in-the-correct-packages">Loading in the correct
-  packages</a>
-- <a href="#convert-to-numeric" id="toc-convert-to-numeric">Convert to
-  Numeric</a>
-- <a href="#tickers" id="toc-tickers">Tickers</a>
-- <a href="#grouped-daily-january" id="toc-grouped-daily-january">Grouped
-  Daily January</a>
-- <a href="#grouped-daily-march" id="toc-grouped-daily-march">Grouped
-  Daily March</a>
-- <a href="#stock-splits-v3" id="toc-stock-splits-v3">Stock Splits V3</a>
-- <a href="#ticker-types" id="toc-ticker-types">Ticker Types</a>
-- <a href="#dividend-v3" id="toc-dividend-v3">Dividend V3</a>
+- <a href="#packages-used-for-financial-data"
+  id="toc-packages-used-for-financial-data">Packages Used for Financial
+  Data</a>
+  - <a href="#loading-in-the-correct-packages"
+    id="toc-loading-in-the-correct-packages">Loading in the correct
+    packages</a>
+  - <a href="#convert-to-numeric" id="toc-convert-to-numeric">Convert to
+    Numeric</a>
+- <a href="#functions" id="toc-functions">Functions</a>
+  - <a href="#tickers" id="toc-tickers">Tickers</a>
+  - <a href="#grouped-daily-january" id="toc-grouped-daily-january">Grouped
+    Daily January</a>
+  - <a href="#grouped-daily-march" id="toc-grouped-daily-march">Grouped
+    Daily March</a>
+  - <a href="#stock-splits-v3" id="toc-stock-splits-v3">Stock Splits V3</a>
+  - <a href="#ticker-types" id="toc-ticker-types">Ticker Types</a>
+  - <a href="#dividend-v3" id="toc-dividend-v3">Dividend V3</a>
+
+# Packages Used for Financial Data
+
+Here is a list of packages I will be using to help me create functions
+and manipulate the data throughout my project.
+
+1.  **jsonlite** - This is an API interaction package that will allow me
+    to connect to the Financial database. It will also allow me to get
+    this data into a nice data frame.
+
+2.  **tidyverse** - This package contains `dplyr` and `tidyr` that will
+    let me manipulate and reshape the data frames. I can add/combine
+    variables and dataframes while also creating plots.
+
+3.  **rmarkdown** - This package will be used to render my data from
+    Rstudio to Github in the correct repos.
 
 ## Loading in the correct packages
 
@@ -23,6 +43,8 @@ Spencer Williams
 
 Creating a function to convert character vectors to numeric if it is a
 vector of numerical data.
+
+# Functions
 
 ## Tickers
 
@@ -194,6 +216,33 @@ dividendV3 <- function(stock="all"){
   
     }
   output <- suppressMessages(as.data.frame(lapply(output, convertToNumeric)))
+  return(output)
+}
+```
+
+``` r
+FinancialAPI <- function(func, ...){
+  if (func == "tickers"){
+    output <- tickers(...)
+  }
+  else if (func == "groupedDailyJan"){
+    output <- groupedDailyJan(...)
+  }
+  else if (func == "groupedDailyMar"){
+    output <- groupedDailyMar(...)
+  }
+  else if (func == "stockSplits"){
+    output <- stockSplits(...)
+  }
+  else if (func == "tickerTypes"){
+    output <- tickerTypes(...)
+  }
+  else if (func == "dividendV3"){
+    output <- dividendV3(...)
+  }
+  else {
+    stop("ERROR: Argument for function is not valid!")
+  }
   return(output)
 }
 ```

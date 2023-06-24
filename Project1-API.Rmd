@@ -12,7 +12,18 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Packages Used for Financial Data
+
+Here is a list of packages I will be using to help me create functions and manipulate the data throughout my project.
+
+1. **jsonlite** - This is an API interaction package that will allow me to connect to the Financial database.   It will also allow me to get this data into a nice data frame.
+
+2. **tidyverse** - This package contains `dplyr` and `tidyr` that will let me manipulate and reshape the data frames. I can add/combine variables and dataframes while also creating plots.
+
+3. **rmarkdown** - This package will be used to render my data from Rstudio to Github in the correct repos.
+
 ## Loading in the correct packages
+
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 library(httr)
 library(dplyr)
@@ -36,6 +47,8 @@ convertToNumeric <- function(vector){
   return(output)
 }
 ```
+
+# Functions
 
 ## Tickers
 
@@ -198,3 +211,35 @@ dividendV3 <- function(stock="all"){
   return(output)
 }
 ```
+
+## Financial API Wrapper Function
+
+```{r}
+FinancialAPI <- function(func, ...){
+  if (func == "tickers"){
+    output <- tickers(...)
+  }
+  else if (func == "groupedDailyJan"){
+    output <- groupedDailyJan(...)
+  }
+  else if (func == "groupedDailyMar"){
+    output <- groupedDailyMar(...)
+  }
+  else if (func == "stockSplits"){
+    output <- stockSplits(...)
+  }
+  else if (func == "tickerTypes"){
+    output <- tickerTypes(...)
+  }
+  else if (func == "dividendV3"){
+    output <- dividendV3(...)
+  }
+  else {
+    stop("ERROR: Argument for function is not valid!")
+  }
+  return(output)
+}
+```
+
+# Data Exploration
+
