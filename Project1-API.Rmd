@@ -297,4 +297,45 @@ Mar <- mutate(Mar, Month = "March", Difference = (Open - Close))
 
 # Joining Datasets
 fullGroupedData <- full_join(Jan, Mar)
+head(fullGroupedData)
 ```
+
+## Contingency Tables
+
+I am creating a `Returns` variable that will tell us whether the stock increased in Price throughout the day. I am then going to create a table to see if January 9th or March 9th would have been a better day for investors. Then, I am going to create a `Twenty` variable to see if stocks were higher or lower than this value at their opening price.
+
+```{r table}
+Returns <- vector()
+for (i in seq_len(nrow(fullGroupedData))) {
+  if(fullGroupedData$Difference[i] >= 0) {
+    Returns[i] <- "Positive"
+  } else if (fullGroupedData$Difference[i] <= 0) {
+    Returns[i] <- "Negative"
+  } else {
+    Returns[i] <- "Error"
+  }
+}
+fullGroupedData$Returns <- Returns
+
+knitr::kable(table(fullGroupedData$Month, fullGroupedData$Returns))
+```
+
+Based on the table, investors had a relatively good day on January 9th and March 9th. March was a very good day for investors with 9,284 stocks being positive out of the total 10,844. January had a respectable 6,668 increased stocks out of the possible 10,953.
+
+```{r contingency2, include=TRUE}
+Twenty <- vector()
+for (i in seq_len(nrow(fullGroupedData))) {
+  if(fullGroupedData$Open[i] >= 20) {
+    Twenty[i] <- "Higher"
+  } else if (fullGroupedData$Open[i] <= 20) {
+    Twenty[i] <- "Lower"
+  } else {
+    Twenty[i] <- "Error"
+  }
+}
+fullGroupedData$Twenty <- Twenty
+
+knitr::kable(table(fullGroupedData$Month, fullGroupedData$Twenty))
+```
+
+Based on this contingency table comparing the opening price of each stock to the month variable, a 20 dollar stock seems to be around the median. In January, 5,316 stocks were above an opening price of 20 dollars while 5,637 stocks were below this price. In March, these totals were 5,418 above and 5,426 below the opening price of 20 dollars
