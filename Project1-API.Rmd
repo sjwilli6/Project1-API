@@ -25,6 +25,7 @@ Here is a list of packages I will be using to help me create functions and manip
 ## Loading in the correct packages
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
+# Loading in Data Packages
 library(httr)
 library(dplyr)
 library(jsonlite)
@@ -38,12 +39,14 @@ Creating a function to convert character vectors to numeric if it is a vector of
 
 ```{r convertToNumeric, include=FALSE}
 convertToNumeric <- function(vector){
+  # Converting Data to Numeric
   if (any(is.na(suppressWarnings(as.numeric(vector))) == TRUE)){
     output <- vector
   }
   else {
     output <- as.numeric(vector)
   }
+  # Return
   return(output)
 }
 ```
@@ -56,16 +59,20 @@ Creating a function to output data based on the name of the stock. The data cont
 
 ```{r tickers}
 tickers <- function(stock="all"){
+  # Get data from API
   outputAPI <- fromJSON("https://api.polygon.io/v3/reference/tickers?active=true&apiKey=BnFt9sqaLWehzloLkpMtEeOG4WjAqkUc")
+  # Results tab in API
   output <- outputAPI$results
-  
+  # See if the stock matches one of the names in the ticker colunn
   if(stock !="all") {
     if(stock %in% output$ticker) {
       output <- output %>% filter(ticker == stock)
     }
+    # See if the stock matches one of the names in the name column
     else if (stock %in% output$name) {
       output <- output %>% filter(name == stock)
     }
+    # Error Message
     else {
       message <- paste("Error: Stock was not found in the ticker or name column of dataset.")
       stop(message)
@@ -74,7 +81,9 @@ tickers <- function(stock="all"){
     else {
   
     }
+  # Create Data Frame
   output <- suppressMessages(as.data.frame(lapply(output, convertToNumeric)))
+  # Return
   return(output)
 }
 ```
@@ -85,13 +94,16 @@ The Grouped Daily function allows the user to get a daily open, high, low, and c
 
 ```{r groupedDailyJan}
 groupedDailyJan <- function(stock="all"){
+  # Get data from API
   outputAPI <- fromJSON("https://api.polygon.io/v2/aggs/grouped/locale/us/market/stocks/2023-01-09?adjusted=true&apiKey=BnFt9sqaLWehzloLkpMtEeOG4WjAqkUc")
+  # Results tab in API
   output <- outputAPI$results
-  
+  # See if stock matches one of the names in the column T
   if(stock !="all") {
     if(stock %in% output$T) {
       output <- output %>% filter(T == stock)
     }
+    # Error Message
     else {
       message <- paste("Error: Stock was not found in the ticker or name column of dataset.")
       stop(message)
@@ -100,7 +112,9 @@ groupedDailyJan <- function(stock="all"){
     else {
   
     }
+  # Create Data Frame
   output <- suppressMessages(as.data.frame(lapply(output, convertToNumeric)))
+  # Return
   return(output)
 }
 ```
@@ -111,13 +125,16 @@ The Grouped Daily function allows the user to get a daily open, high, low, and c
 
 ```{r groupedDailyMar}
 groupedDailyMar <- function(stock="all"){
+  # Get Data from API
   outputAPI <- fromJSON("https://api.polygon.io/v2/aggs/grouped/locale/us/market/stocks/2023-03-09?adjusted=true&apiKey=BnFt9sqaLWehzloLkpMtEeOG4WjAqkUc")
+  # Results tab in API
   output <- outputAPI$results
-  
+  # See if the stock matches one of the names in the column T
   if(stock !="all") {
     if(stock %in% output$T) {
       output <- output %>% filter(T == stock)
     }
+    # Error Message
     else {
       message <- paste("Error: Stock was not found in the ticker or name column of dataset.")
       stop(message)
@@ -126,7 +143,9 @@ groupedDailyMar <- function(stock="all"){
     else {
   
     }
+  # Create Data Frame
   output <- suppressMessages(as.data.frame(lapply(output, convertToNumeric)))
+  # Return
   return(output)
 }
 ```
@@ -137,13 +156,16 @@ Stock Splits V3 will give the user a list of historical stock splits, including 
 
 ```{r stockSplits}
 stockSplits <- function(stock="all"){
+  # Get Data from API
   outputAPI <- fromJSON("https://api.polygon.io/v3/reference/splits?apiKey=BnFt9sqaLWehzloLkpMtEeOG4WjAqkUc")
+  # Results tab in the API
   output <- outputAPI$results
-  
+  # See if the stock matches one of the names in the ticker column
   if(stock !="all") {
     if(stock %in% output$ticker) {
       output <- output %>% filter(ticker == stock)
     }
+    # Error Messages
     else {
       message <- paste("Error: Stock has not been split recently or invalid stock.")
       stop(message)
@@ -152,7 +174,9 @@ stockSplits <- function(stock="all"){
     else {
   
     }
+  # Create Data Frame
   output <- suppressMessages(as.data.frame(lapply(output, convertToNumeric)))
+  # Return
   return(output)
 }
 ```
@@ -163,16 +187,20 @@ Ticker Types is the different type of stocks that are being kept in the data sys
 
 ```{r tickerTypes}
 tickerTypes <- function(stock="all"){
+  # Get Data from API
   outputAPI <- fromJSON("https://api.polygon.io/v3/reference/tickers/types?apiKey=BnFt9sqaLWehzloLkpMtEeOG4WjAqkUc")
+  # Results tab in API
   output <- outputAPI$results
-  
+  # See if the stock matches one of the names in the code column
   if(stock !="all") {
     if(stock %in% output$code) {
       output <- output %>% filter(code == stock)
     }
+    # See if the stock matches one of the names in the descriptions column
     else if (stock %in% output$description) {
       output <- output %>% filter(description == stock)
     }
+    # Error Message
     else {
       message <- paste("Error: Stock was not found in the ticker or name column of dataset.")
       stop(message)
@@ -181,7 +209,9 @@ tickerTypes <- function(stock="all"){
     else {
   
     }
+  # Create Data Frame
   output <- suppressMessages(as.data.frame(lapply(output, convertToNumeric)))
+  # Return
   return(output)
 }
 ```
@@ -192,13 +222,16 @@ This function will give a list of historical cash dividends, including the ticke
 
 ```{r dividendsV3}
 dividendV3 <- function(stock="all"){
+  # Get Data from API
   outputAPI <- fromJSON("https://api.polygon.io/v3/reference/dividends?apiKey=BnFt9sqaLWehzloLkpMtEeOG4WjAqkUc")
+  # Results tab in API
   output <- outputAPI$results
-  
+  # See if Stock matches one of the names in the ticker column
   if(stock !="all") {
     if(stock %in% output$ticker) {
       output <- output %>% filter(ticker == stock)
     }
+    # Error Message
     else {
       message <- paste("Error: Stock was not found in the ticker or name column of dataset.")
       stop(message)
@@ -207,15 +240,18 @@ dividendV3 <- function(stock="all"){
     else {
   
     }
+  # Create Data Frame
   output <- suppressMessages(as.data.frame(lapply(output, convertToNumeric)))
+  # Return
   return(output)
 }
 ```
 
 ## Financial API Wrapper Function
 
-```{r}
+```{r financialAPI}
 FinancialAPI <- function(func, ...){
+  # List of Functions Created
   if (func == "tickers"){
     output <- tickers(...)
   }
@@ -234,12 +270,31 @@ FinancialAPI <- function(func, ...){
   else if (func == "dividendV3"){
     output <- dividendV3(...)
   }
+  # Error Message
   else {
     stop("ERROR: Argument for function is not valid!")
   }
+  # Return
   return(output)
 }
 ```
 
 # Data Exploration
 
+I am going to create a new *Month* variable for the `groupedDailyJan` and `groupedDailyMar` datasets so that i can combine the two. I am then going to create one more variable, *Difference*, that will calculate the difference between the *Open* and *Close* price.
+
+```{r combination, Include = FALSE}
+Jan <- FinancialAPI("groupedDailyJan")
+Mar <- FinancialAPI("groupedDailyMar")
+
+# Renaming Column Names
+colnames(Jan) <- c("Symbol", "Volume", "Volume_Weight", "Open", "Close", "High", "Low", "Timestamp", "Transactions")
+colnames(Mar) <- c("Symbol", "Volume", "Volume_Weight", "Open", "Close", "High", "Low", "Timestamp", "Transactions")
+
+# Creating Month and Difference Variable
+Jan <- mutate(Jan, Month = "January", Difference = (Open - Close))
+Mar <- mutate(Mar, Month = "March", Difference = (Open - Close))
+
+# Joining Datasets
+fullGroupedData <- full_join(Jan, Mar)
+```

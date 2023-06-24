@@ -20,6 +20,11 @@ Spencer Williams
   - <a href="#stock-splits-v3" id="toc-stock-splits-v3">Stock Splits V3</a>
   - <a href="#ticker-types" id="toc-ticker-types">Ticker Types</a>
   - <a href="#dividend-v3" id="toc-dividend-v3">Dividend V3</a>
+  - <a href="#financial-api-wrapper-function"
+    id="toc-financial-api-wrapper-function">Financial API Wrapper
+    Function</a>
+- <a href="#data-exploration" id="toc-data-exploration">Data
+  Exploration</a>
 
 # Packages Used for Financial Data
 
@@ -220,6 +225,8 @@ dividendV3 <- function(stock="all"){
 }
 ```
 
+## Financial API Wrapper Function
+
 ``` r
 FinancialAPI <- function(func, ...){
   if (func == "tickers"){
@@ -246,3 +253,25 @@ FinancialAPI <- function(func, ...){
   return(output)
 }
 ```
+
+# Data Exploration
+
+I am going to create a new *Month* variable for the `groupedDailyJan`
+and `groupedDailyMar` datasets so that i can combine the two. I am then
+going to create one more variable, *Difference*, that will calculate the
+difference between the *Open* and *Close* price.
+
+``` r
+Jan <- FinancialAPI("groupedDailyJan")
+Mar <- FinancialAPI("groupedDailyMar")
+colnames(Jan) <- c("Symbol", "Volume", "Volume_Weight", "Open", "Close", "High", "Low", "Timestamp", "Transactions")
+colnames(Mar) <- c("Symbol", "Volume", "Volume_Weight", "Open", "Close", "High", "Low", "Timestamp", "Transactions")
+
+Jan <- mutate(Jan, Month = "January", Difference = (Open - Close))
+Mar <- mutate(Mar, Month = "March", Difference = (Open - Close))
+
+fullGroupedData <- full_join(Jan, Mar)
+```
+
+    ## Joining with `by = join_by(Symbol, Volume, Volume_Weight, Open, Close, High,
+    ## Low, Timestamp, Transactions, Month, Difference)`
