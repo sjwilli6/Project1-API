@@ -21,7 +21,10 @@ library(rmarkdown)
 library(tidyverse)
 ```
 
-## Creating a function to convert character vectors to numeric if it is a vector of numerical data
+## Convert to Numeric
+
+Creating a function to convert character vectors to numeric if it is a vector of numerical data.
+
 ```{r convertToNumeric, include=FALSE}
 convertToNumeric <- function(vector){
   if (any(is.na(suppressWarnings(as.numeric(vector))) == TRUE)){
@@ -34,9 +37,11 @@ convertToNumeric <- function(vector){
 }
 ```
 
-## `Tickers`
+## Tickers
 
-```{r}
+Creating a function to output data based on the name of the stock. The data contains ticker symbols such as stocks/equities, indices, forex, and crypto.
+
+```{r tickers}
 tickers <- function(stock="all"){
   outputAPI <- fromJSON("https://api.polygon.io/v3/reference/tickers?active=true&apiKey=BnFt9sqaLWehzloLkpMtEeOG4WjAqkUc")
   output <- outputAPI$results
@@ -60,4 +65,64 @@ tickers <- function(stock="all"){
   return(output)
 }
 ```
+
+## Grouped Daily
+
+The Grouped Daily function allows the user to get a daily open, high, low, and closing price for the entire stock/equities markets. In this function, I set up data from January 9, 2023.
+
+```{r groupedDaily}
+groupedDaily <- function(stock="all"){
+  outputAPI <- fromJSON("https://api.polygon.io/v2/aggs/grouped/locale/us/market/stocks/2023-01-09?adjusted=true&apiKey=BnFt9sqaLWehzloLkpMtEeOG4WjAqkUc")
+  output <- outputAPI$results
+  
+  if(stock !="all") {
+    if(stock %in% output$T) {
+      output <- output %>% filter(T == stock)
+    }
+    else {
+      message <- paste("Error: Stock was not found in the ticker or name column of dataset.")
+      stop(message)
+    }
+  }
+    else {
+  
+    }
+  output <- suppressMessages(as.data.frame(lapply(output, convertToNumeric)))
+  return(output)
+}
+```
+
+## Stock Splits V3
+
+Stock Splits V3 will give the user a list of historical stock splits, including the ticker symbol, the execution date, and the factors of the split ratio.
+
+```{r stockSplits}
+stockSplits <- function(stock="all"){
+  outputAPI <- fromJSON("https://api.polygon.io/v3/reference/splits?apiKey=BnFt9sqaLWehzloLkpMtEeOG4WjAqkUc")
+  output <- outputAPI$results
+  
+  if(stock !="all") {
+    if(stock %in% output$ticker) {
+      output <- output %>% filter(ticker == stock)
+    }
+    else {
+      message <- paste("Error: Stock was not found in the ticker or name column of dataset.")
+      stop(message)
+    }
+  }
+    else {
+  
+    }
+  output <- suppressMessages(as.data.frame(lapply(output, convertToNumeric)))
+  return(output)
+}
+```
+
+## Market Status
+
+This function will allow the user to get the current trading status of the exchnanges and the overall financial markets.
+
+## Stock Splits V3
+
+Stock Splits V3 will give the user a list of historical stock splits, including the ticker symbol, the execution date, and the factors of the split ratio.
 
