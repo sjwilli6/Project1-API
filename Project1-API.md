@@ -27,6 +27,9 @@ Spencer Williams
   Exploration</a>
   - <a href="#contingency-tables" id="toc-contingency-tables">Contingency
     Tables</a>
+    - <a href="#creating-numerical-summaries-grouped-by-month"
+      id="toc-creating-numerical-summaries-grouped-by-month">Creating
+      Numerical Summaries Grouped by Month</a>
 
 # Packages Used for Financial Data
 
@@ -390,3 +393,35 @@ knitr::kable(table(fullGroupedData$Month, fullGroupedData$Twenty))
 |:--------|-------:|------:|
 | January |   5316 |  5637 |
 | March   |   5418 |  5426 |
+
+Based on this contingency table comparing the opening price of each
+stock to the month variable, a 20 dollar stock seems to be around the
+median. In January, 5,316 stocks were above an opening price of 20
+dollars while 5,637 stocks were below this price. In March, these totals
+were 5,418 above and 5,426 below the opening price of 20 dollars.
+
+### Creating Numerical Summaries Grouped by Month
+
+``` r
+tapply(fullGroupedData$Low, fullGroupedData$Month, summary)
+```
+
+    ## $January
+    ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+    ##      0.0      6.8     19.0     78.9     34.9 476653.3 
+    ## 
+    ## $March
+    ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+    ##      0.0      6.5     19.5     78.6     35.6 460924.4
+
+``` r
+tapply(fullGroupedData$High, fullGroupedData$Month, summary)
+```
+
+    ## $January
+    ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+    ##      0.0      7.1     19.4     80.8     35.7 487989.1 
+    ## 
+    ## $March
+    ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+    ##      0.0      7.0     20.1     81.0     36.8 474833.9

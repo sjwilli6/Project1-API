@@ -297,7 +297,6 @@ Mar <- mutate(Mar, Month = "March", Difference = (Open - Close))
 
 # Joining Datasets
 fullGroupedData <- full_join(Jan, Mar)
-head(fullGroupedData)
 ```
 
 ## Contingency Tables
@@ -305,37 +304,58 @@ head(fullGroupedData)
 I am creating a `Returns` variable that will tell us whether the stock increased in Price throughout the day. I am then going to create a table to see if January 9th or March 9th would have been a better day for investors. Then, I am going to create a `Twenty` variable to see if stocks were higher or lower than this value at their opening price.
 
 ```{r table}
+# Creating vector
 Returns <- vector()
+# Creating for loop from 1 to the number of rows in the dataset
 for (i in seq_len(nrow(fullGroupedData))) {
+  # Positive return in Stock
   if(fullGroupedData$Difference[i] >= 0) {
     Returns[i] <- "Positive"
+  # Negative return in Stock
   } else if (fullGroupedData$Difference[i] <= 0) {
     Returns[i] <- "Negative"
   } else {
     Returns[i] <- "Error"
   }
 }
+# Adding Return to my dataset
 fullGroupedData$Returns <- Returns
-
+# Creating contingency table
 knitr::kable(table(fullGroupedData$Month, fullGroupedData$Returns))
 ```
 
 Based on the table, investors had a relatively good day on January 9th and March 9th. March was a very good day for investors with 9,284 stocks being positive out of the total 10,844. January had a respectable 6,668 increased stocks out of the possible 10,953.
 
 ```{r contingency2, include=TRUE}
+# Creating vector
 Twenty <- vector()
+# Creating for loop from 1 to the number of rows in the dataset
 for (i in seq_len(nrow(fullGroupedData))) {
+  # If the stock opened greater than $20.
   if(fullGroupedData$Open[i] >= 20) {
     Twenty[i] <- "Higher"
+  # If the stock opened less than $20.
   } else if (fullGroupedData$Open[i] <= 20) {
     Twenty[i] <- "Lower"
   } else {
     Twenty[i] <- "Error"
   }
 }
+# Add variable to the dataset
 fullGroupedData$Twenty <- Twenty
-
+# Create contingency table
 knitr::kable(table(fullGroupedData$Month, fullGroupedData$Twenty))
 ```
 
-Based on this contingency table comparing the opening price of each stock to the month variable, a 20 dollar stock seems to be around the median. In January, 5,316 stocks were above an opening price of 20 dollars while 5,637 stocks were below this price. In March, these totals were 5,418 above and 5,426 below the opening price of 20 dollars
+Based on this contingency table comparing the opening price of each stock to the month variable, a 20 dollar stock seems to be around the median. In January, 5,316 stocks were above an opening price of 20 dollars while 5,637 stocks were below this price. In March, these totals were 5,418 above and 5,426 below the opening price of 20 dollars.
+
+### Creating Numerical Summaries Grouped by `Month`
+
+```{r summary, include=TRUE}
+# Creating numerical summary's to see the details about the Jan/Mar lows and highs
+tapply(fullGroupedData$Low, fullGroupedData$Month, summary)
+tapply(fullGroupedData$High, fullGroupedData$Month, summary)
+```
+
+Here, I am comparing numerical summaries between months for the daily high and lows. Based on the mean and median of each month, the data seems to be heavily skewed to the right (higher stock price). The summary statistics are relatively similar for the two months at daily low and high prices.
+
