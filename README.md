@@ -33,6 +33,7 @@ Spencer Williams
       Numerical Summaries Grouped by <code>Month</code></a>
   - <a href="#creating-plots-for-data"
     id="toc-creating-plots-for-data">Creating Plots for Data</a>
+- <a href="#conclusion" id="toc-conclusion">Conclusion</a>
 
 # Intro
 
@@ -565,3 +566,12 @@ Based on this *Histogram of Transactions*, most stocks have a small
 amount on January 9th. It is heavily skewed to the left, which would be
 expected. I would assume that most stocks would have smaller
 transactions on a daily basis.
+
+# Conclusion
+
+I hope you were able to learn more about API’s and the stock market
+throughout this vignette. Financial data is important to know and can be
+widely manipulated. If I were to look at this in more detail, I would
+want to see data from different years to see if there are any trends. I
+know that the market took a big hit during covid, but I wonder if
+transactions and volume were influenced throughout that time.
