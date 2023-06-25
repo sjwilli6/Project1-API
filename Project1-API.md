@@ -29,7 +29,9 @@ Spencer Williams
     Tables</a>
     - <a href="#creating-numerical-summaries-grouped-by-month"
       id="toc-creating-numerical-summaries-grouped-by-month">Creating
-      Numerical Summaries Grouped by Month</a>
+      Numerical Summaries Grouped by <code>Month</code></a>
+  - <a href="#creating-plots-for-data"
+    id="toc-creating-plots-for-data">Creating Plots for Data</a>
 
 # Packages Used for Financial Data
 
@@ -320,25 +322,6 @@ fullGroupedData <- full_join(Jan, Mar)
     ## Joining with `by = join_by(Symbol, Volume, Volume_Weight, Open, Close, High,
     ## Low, Timestamp, Transactions, Month, Difference)`
 
-``` r
-head(fullGroupedData)
-```
-
-    ##   Symbol  Volume Volume_Weight  Open Close   High     Low    Timestamp
-    ## 1   TTMI  394280       16.1078 15.96 16.08 16.335 15.9600 1.673298e+12
-    ## 2    OEC  485157       19.0627 18.67 18.98 19.430 18.4500 1.673298e+12
-    ## 3   USDU  642813       25.8745 25.92 25.88 25.950 25.8204 1.673298e+12
-    ## 4   BWXT  389669       57.4657 58.15 57.28 58.180 57.0250 1.673298e+12
-    ## 5    WRB 1298028       73.2759 74.29 72.98 74.380 72.5900 1.673298e+12
-    ## 6    WIW  161653        9.4369  9.38  9.48  9.500  9.3500 1.673298e+12
-    ##   Transactions   Month Difference
-    ## 1         5416 January      -0.12
-    ## 2         8130 January      -0.31
-    ## 3         2417 January       0.04
-    ## 4         7325 January       0.87
-    ## 5        15947 January       1.31
-    ## 6          983 January      -0.10
-
 ## Contingency Tables
 
 I am creating a `Returns` variable that will tell us whether the stock
@@ -348,19 +331,24 @@ investors. Then, I am going to create a `Twenty` variable to see if
 stocks were higher or lower than this value at their opening price.
 
 ``` r
+# Creating vector
 Returns <- vector()
+# Creating for loop from 1 to the number of rows in the dataset
 for (i in seq_len(nrow(fullGroupedData))) {
+  # Positive return in Stock
   if(fullGroupedData$Difference[i] >= 0) {
     Returns[i] <- "Positive"
+  # Negative return in Stock
   } else if (fullGroupedData$Difference[i] <= 0) {
     Returns[i] <- "Negative"
   } else {
     Returns[i] <- "Error"
   }
 }
+# Adding Return to my dataset
 fullGroupedData$Returns <- Returns
-
-knitr::kable(table(fullGroupedData$Month, fullGroupedData$Returns))
+# Creating contingency table
+knitr::kable(table(fullGroupedData$Month, fullGroupedData$Returns), caption= "Monthly Returns")
 ```
 
 |         | Negative | Positive |
@@ -368,25 +356,47 @@ knitr::kable(table(fullGroupedData$Month, fullGroupedData$Returns))
 | January |     4285 |     6668 |
 | March   |     1560 |     9284 |
 
+Monthly Returns
+
 Based on the table, investors had a relatively good day on January 9th
 and March 9th. March was a very good day for investors with 9,284 stocks
 being positive out of the total 10,844. January had a respectable 6,668
-increased stocks out of the possible 10,953.
+increased stocks out of the possible 10,953. Here is a bar plot
+displaying the data.
 
 ``` r
+# Creating base for graph
+g <- ggplot(fullGroupedData, aes(x = Returns))
+# Adding bars to the graph
+g + geom_bar(aes(fill = Month)) +
+  # Creating labels and titles
+  labs(x = "Returns", title = "Monthly Returns") +
+  scale_x_discrete(labels = c("Negative", "Positive"))
+```
+
+![](Project1-API_files/figure-gfm/plot1-1.png)<!-- -->
+
+Creating a second contingency table based on a new variable, `twenty`.
+
+``` r
+# Creating vector
 Twenty <- vector()
+# Creating for loop from 1 to the number of rows in the dataset
 for (i in seq_len(nrow(fullGroupedData))) {
+  # If the stock opened greater than $20.
   if(fullGroupedData$Open[i] >= 20) {
     Twenty[i] <- "Higher"
+  # If the stock opened less than $20.
   } else if (fullGroupedData$Open[i] <= 20) {
     Twenty[i] <- "Lower"
   } else {
     Twenty[i] <- "Error"
   }
 }
+# Add variable to the dataset
 fullGroupedData$Twenty <- Twenty
-
-knitr::kable(table(fullGroupedData$Month, fullGroupedData$Twenty))
+# Create contingency table
+knitr::kable(table(fullGroupedData$Month, fullGroupedData$Twenty), caption= "$20 Budget")
 ```
 
 |         | Higher | Lower |
@@ -394,15 +404,33 @@ knitr::kable(table(fullGroupedData$Month, fullGroupedData$Twenty))
 | January |   5316 |  5637 |
 | March   |   5418 |  5426 |
 
+\$20 Budget
+
 Based on this contingency table comparing the opening price of each
 stock to the month variable, a 20 dollar stock seems to be around the
 median. In January, 5,316 stocks were above an opening price of 20
 dollars while 5,637 stocks were below this price. In March, these totals
-were 5,418 above and 5,426 below the opening price of 20 dollars.
-
-### Creating Numerical Summaries Grouped by Month
+were 5,418 above and 5,426 below the opening price of 20 dollars. Below
+is a visual to see that 20 dollars is roughly the median of the data.
 
 ``` r
+# Creating base for graph
+g <- ggplot(fullGroupedData, aes(x = Twenty))
+# Adding bars to the graph
+g + geom_bar(aes(fill = Month)) +
+  # Creating labels and titles for graph
+  labs(x = "Returns", title = "$20 Budget") +
+  scale_x_discrete(labels = c("Higher", "Lower")) +
+  # Flipping the graph to the left side if user's prefer
+  coord_flip()
+```
+
+![](Project1-API_files/figure-gfm/plot2-1.png)<!-- -->
+
+### Creating Numerical Summaries Grouped by `Month`
+
+``` r
+# Creating numerical summary's to see the details about the Jan/Mar lows and highs
 tapply(fullGroupedData$Low, fullGroupedData$Month, summary)
 ```
 
@@ -425,3 +453,81 @@ tapply(fullGroupedData$High, fullGroupedData$Month, summary)
     ## $March
     ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
     ##      0.0      7.0     20.1     81.0     36.8 474833.9
+
+Here, I am comparing numerical summaries between months for the daily
+high and lows. Based on the mean and median of each month, the data
+seems to be heavily skewed to the right (higher stock price). The
+summary statistics are relatively similar for the two months at daily
+low and high prices.
+
+## Creating Plots for Data
+
+Creating a Box Plot of the data in `Dividend`. It will compare the cash
+amount of the recent CDs.
+
+``` r
+# Calling "cash" data
+cash <- FinancialAPI("dividendV3")
+# Creating base for graph
+g <- ggplot(cash, aes(x = ticker, y = cash_amount))
+# Adding blue boxplots
+g + geom_boxplot(fill = "blue") +
+  # Adding labels and titles
+  labs(x ="Symbol", y = "Cash Amount", title = "Boxplot for CDs in Dividends")
+```
+
+![](Project1-API_files/figure-gfm/plot3-1.png)<!-- -->
+
+Based on this Box Plot, *GEGGL* has a higher cash amount dividend than
+*GECCO*.
+
+I am going to create a scatterplot to see if the number of transactions
+has any relationship to the trading volume. In other words, are there
+large amounts of volume being bought in March with little transactions
+(large amount of money for a smaller group of individuals) vs a smaller
+volume with large amounts of transactions.
+
+``` r
+# Creating base for graph
+g <- ggplot(Mar, aes(x = Volume, y = Transactions))
+# Adding scatterplot with text for each symbol
+g + geom_text(aes(label = Symbol)) +
+  # Adding labels and titles
+    labs(x ="Volume", y = "Transactions", title = "Transactions vs Volume on March 9")
+```
+
+    ## Warning: Removed 104 rows containing missing values (`geom_text()`).
+
+![](Project1-API_files/figure-gfm/plot4-1.png)<!-- -->
+
+Looking at the data, Tesla (TSLA) has a very large volume of stock being
+bought with a large amount of transactions. TQQQ on the other hand has
+an enormous volume, but not as many transactions. I wonder if this could
+be due to one particular individual or business that bought a large
+amount of this stock.
+
+I want to see if how many transactions were made on January 9. However,
+looking at the data from previous EDA, there are going to be outliers.
+As a result, I am going to cutoff my histogram at 5,000 transactions.
+
+``` r
+# Creating base for graph
+g <- ggplot(Jan, aes(x = Transactions))
+# Adding histogram to graph with binwidth and colors
+g + geom_histogram(binwidth = 100, color = "red", fill = "black") +
+  # Setting a cutoff to ignore outliers
+  xlim(0, 5000) +
+  # Adding labels and titles
+  labs(y ="Count", x = "Transactions", title = "Histogram of Transactions on January 9")
+```
+
+    ## Warning: Removed 2782 rows containing non-finite values (`stat_bin()`).
+
+    ## Warning: Removed 2 rows containing missing values (`geom_bar()`).
+
+![](Project1-API_files/figure-gfm/plot5-1.png)<!-- -->
+
+Based on this *Histogram of Transactions*, most stocks have a small
+amount on January 9th. It is heavily skewed to the left, which would be
+expected. I would assume that most stocks would have smaller
+transactions on a daily basis.
