@@ -28,7 +28,7 @@ Here is a list of packages I will be using to help me create functions and manip
 
 ## Loading in the correct packages
 
-```{r echo=FALSE, warning=FALSE, message=FALSE}
+```{r echo=TRUE, warning=FALSE, message=FALSE}
 # Loading in Data Packages
 library(httr)
 library(dplyr)
@@ -289,7 +289,7 @@ FinancialAPI <- function(func, ...){
 
 I am going to create a new *Month* variable for the `groupedDailyJan` and `groupedDailyMar` datasets so that i can combine the two. I am then going to create one more variable, *Difference*, that will calculate the difference between the *Open* and *Close* price.
 
-```{r combination, Include = TRUE}
+```{r combination, Include = TRUE, warning=FALSE, message=FALSE}
 Jan <- FinancialAPI("groupedDailyJan")
 Mar <- FinancialAPI("groupedDailyMar")
 
@@ -410,7 +410,7 @@ Based on this Box Plot, *GEGGL* has a higher cash amount dividend than *GECCO*.
 
 I am going to create a scatterplot to see if the number of transactions has any relationship to the trading volume. In other words, are there large amounts of volume being bought in March with little transactions (large amount of money for a smaller group of individuals) vs a smaller volume with large amounts of transactions. 
 
-```{r plot4, include=TRUE}
+```{r plot4, include=TRUE, warning=FALSE, message=FALSE}
 # Creating base for graph
 g <- ggplot(Mar, aes(x = Volume, y = Transactions))
 # Adding scatterplot with text for each symbol
@@ -423,7 +423,7 @@ Looking at the data, Tesla (TSLA) has a very large volume of stock being bought 
 
 I want to see if how many transactions were made on January 9. However, looking at the data from previous EDA, there are going to be outliers. As a result, I am going to cutoff my histogram at 5,000 transactions.
 
-```{r plot5, include=TRUE}
+```{r plot5, include=TRUE, warning=FALSE, message=FALSE}
 # Creating base for graph
 g <- ggplot(Jan, aes(x = Transactions))
 # Adding histogram to graph with binwidth and colors

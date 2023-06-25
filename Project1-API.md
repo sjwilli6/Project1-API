@@ -61,6 +61,15 @@ and manipulate the data throughout my project.
 
 ## Loading in the correct packages
 
+``` r
+# Loading in Data Packages
+library(httr)
+library(dplyr)
+library(jsonlite)
+library(rmarkdown)
+library(tidyverse)
+```
+
 ## Convert to Numeric
 
 Creating a function to convert numeric vectors that are stored as
