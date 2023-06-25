@@ -427,3 +427,4 @@ g + geom_histogram(binwidth = 100, color = "red", fill = "black") +
 ```
 
 Based on this *Histogram of Transactions*, most stocks have a small amount on January 9th. It is heavily skewed to the left, which would be expected. I would assume that most stocks would have smaller transactions on a daily basis.
+
