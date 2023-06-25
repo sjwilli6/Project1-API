@@ -3,6 +3,7 @@ Project 1 - Financial Data API
 Spencer Williams
 6/25/2023
 
+- <a href="#intro" id="toc-intro">Intro</a>
 - <a href="#packages-used-for-financial-data"
   id="toc-packages-used-for-financial-data">Packages Used for Financial
   Data</a>
@@ -33,6 +34,15 @@ Spencer Williams
   - <a href="#creating-plots-for-data"
     id="toc-creating-plots-for-data">Creating Plots for Data</a>
 
+# Intro
+
+I enjoy the stock market and the unpredictability that comes with it. I
+have chosen to take a deeper dive into the [Financial Data
+API](https://polygon.io/docs/stocks). Some specific details that come to
+mind are the daily high and lows of each stock. I also wanted to look at
+the volume and transactions to see which stocks have the most
+interaction among the public.
+
 # Packages Used for Financial Data
 
 Here is a list of packages I will be using to help me create functions
@@ -53,8 +63,22 @@ and manipulate the data throughout my project.
 
 ## Convert to Numeric
 
-Creating a function to convert character vectors to numeric if it is a
-vector of numerical data.
+Creating a function to convert numeric vectors that are stored as
+character to a numeric data type.
+
+``` r
+convertToNumeric <- function(vector){
+  # Converting Data to Numeric
+  if (any(is.na(suppressWarnings(as.numeric(vector))) == TRUE)){
+    output <- vector
+  }
+  else {
+    output <- as.numeric(vector)
+  }
+  # Return
+  return(output)
+}
+```
 
 # Functions
 
@@ -62,7 +86,8 @@ vector of numerical data.
 
 Creating a function to output data based on the name of the stock. The
 data contains ticker symbols such as stocks/equities, indices, forex,
-and crypto.
+and crypto. It will then output a data frame of the called ticker
+symbol.
 
 ``` r
 tickers <- function(stock="all"){
@@ -99,7 +124,9 @@ tickers <- function(stock="all"){
 
 The Grouped Daily function allows the user to get a daily open, high,
 low, and closing price for the entire stock/equities markets. In this
-function, I set up data from January 9, 2023.
+function, I set up data from January 9, 2023. The user will input a
+stock or ticker, and the output will contain details from the specific
+date.
 
 ``` r
 groupedDailyJan <- function(stock="all"){
@@ -132,7 +159,8 @@ groupedDailyJan <- function(stock="all"){
 
 The Grouped Daily function allows the user to get a daily open, high,
 low, and closing price for the entire stock/equities markets. In this
-function, I set up data from March 9, 2023.
+function, I set up data from March 9, 2023. The user will input a stock
+or ticker, and the output will contain details from the specific date.
 
 ``` r
 groupedDailyMar <- function(stock="all"){
@@ -266,6 +294,9 @@ dividendV3 <- function(stock="all"){
 
 ## Financial API Wrapper Function
 
+This function is a wrapper function called `FinancialAPI` that will
+allow the user to easily call one of the functions listed above.
+
 ``` r
 FinancialAPI <- function(func, ...){
   # List of Functions Created
@@ -376,7 +407,9 @@ g + geom_bar(aes(fill = Month)) +
 
 ![](Project1-API_files/figure-gfm/plot1-1.png)<!-- -->
 
-Creating a second contingency table based on a new variable, `twenty`.
+Creating a second contingency table based on a new variable, `twenty`. I
+thought twenty would be a reasonable stock price so i decided to pick
+this as a variable.
 
 ``` r
 # Creating vector
@@ -429,6 +462,9 @@ g + geom_bar(aes(fill = Month)) +
 
 ### Creating Numerical Summaries Grouped by `Month`
 
+Here, I am comparing numerical summaries between months for the daily
+high and lows.
+
 ``` r
 # Creating numerical summary's to see the details about the Jan/Mar lows and highs
 tapply(fullGroupedData$Low, fullGroupedData$Month, summary)
@@ -454,16 +490,14 @@ tapply(fullGroupedData$High, fullGroupedData$Month, summary)
     ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
     ##      0.0      7.0     20.1     81.0     36.8 474833.9
 
-Here, I am comparing numerical summaries between months for the daily
-high and lows. Based on the mean and median of each month, the data
-seems to be heavily skewed to the right (higher stock price). The
-summary statistics are relatively similar for the two months at daily
-low and high prices.
+Based on the mean and median of each month, the data seems to be heavily
+skewed to the right (higher stock price). The summary statistics are
+relatively similar for the two months at daily low and high prices.
 
 ## Creating Plots for Data
 
 Creating a Box Plot of the data in `Dividend`. It will compare the cash
-amount of the recent CDs.
+amount of the recent CDs in the API.
 
 ``` r
 # Calling "cash" data
