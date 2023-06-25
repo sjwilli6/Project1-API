@@ -61,6 +61,15 @@ and manipulate the data throughout my project.
 
 ## Loading in the correct packages
 
+``` r
+# Loading in Data Packages
+library(httr)
+library(dplyr)
+library(jsonlite)
+library(rmarkdown)
+library(tidyverse)
+```
+
 ## Convert to Numeric
 
 Creating a function to convert numeric vectors that are stored as
@@ -350,9 +359,6 @@ Mar <- mutate(Mar, Month = "March", Difference = (Open - Close))
 fullGroupedData <- full_join(Jan, Mar)
 ```
 
-    ## Joining with `by = join_by(Symbol, Volume, Volume_Weight, Open, Close, High, Low, Timestamp, Transactions,
-    ## Month, Difference)`
-
 ## Contingency Tables
 
 I am creating a `Returns` variable that will tell us whether the stock
@@ -530,8 +536,6 @@ g + geom_text(aes(label = Symbol)) +
     labs(x ="Volume", y = "Transactions", title = "Transactions vs Volume on March 9")
 ```
 
-    ## Warning: Removed 104 rows containing missing values (`geom_text()`).
-
 ![](README_files/figure-gfm/plot4-1.png)<!-- -->
 
 Looking at the data, Tesla (TSLA) has a very large volume of stock being
@@ -554,10 +558,6 @@ g + geom_histogram(binwidth = 100, color = "red", fill = "black") +
   # Adding labels and titles
   labs(y ="Count", x = "Transactions", title = "Histogram of Transactions on January 9")
 ```
-
-    ## Warning: Removed 2782 rows containing non-finite values (`stat_bin()`).
-
-    ## Warning: Removed 2 rows containing missing values (`geom_bar()`).
 
 ![](README_files/figure-gfm/plot5-1.png)<!-- -->
 
